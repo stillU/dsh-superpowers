@@ -1,75 +1,77 @@
 # dsh-superpowers
 
-> DeepSeek Harness × Superpowers：把 obra/superpowers 的完整技能方法论搬进 DSH，装完即用，无需每会话手动开启。
+[简体中文](README.zh-CN.md)
 
-`dsh-superpowers` 是 [obra/superpowers](https://github.com/obra/superpowers) **v6.3.0** 面向 [DeepSeek Harness](https://deepseek-harness.github.io/deepseek-harness/)（DSH）的宿主插件适配：14 个技能逐字 vendor 自上游，每次会话自动注入 superpowers bootstrap，用 DSH 原生 `skill` 工具与斜杠命令家族驱动完整开发工作流。
+> DeepSeek Harness × Superpowers: bring the complete superpowers methodology into DSH — install once, no per-session opt-in.
 
-## 功能特性
+`dsh-superpowers` is a DeepSeek Harness (DSH) host-plugin adaptation of [obra/superpowers](https://github.com/obra/superpowers) **v6.3.0**: all 14 skills are vendored verbatim from upstream, the superpowers bootstrap is injected at the start of every session, and the DSH-native `skill` tool plus a slash-command family drive the full development workflow.
 
-- **14 个技能**：brainstorming、test-driven-development、systematic-debugging、writing-plans、executing-plans、subagent-driven-development、dispatching-parallel-agents、using-git-worktrees、verification-before-completion、requesting-code-review、receiving-code-review、finishing-a-development-branch、writing-skills、using-superpowers。
-- **bootstrap 自动注入**：会话开始时自动注入 `using-superpowers` 全文 + DSH 工具映射，模型在写代码前自动进入 brainstorming → 计划 → TDD → 调试 → 验收 的工作流（等价 Claude Code 的 SessionStart hook）。
-- **技能目录原生可用**：技能通过 `ctx.skills` 注册进每个会话的 `<available_skills>` 目录，用 DSH 原生 `skill` 工具加载，与任何其他技能完全同体验。
-- **DSH 工具映射**：`skills/using-superpowers/references/dsh-tools.md` 把技能的动作词汇翻译为 DSH 工具（`skill` / `read` / `write` / `edit` / `grep` / `glob` / `bash` / `todo_write` / `subagent` / `subagent_fork` / `workflow` / `/plan`+`exit_plan_mode` / `web_search` / `ask_user_question` 等）。
-- **斜杠命令家族**：输入 `/` 即可见 `/superpowers [技能名] [诉求]` 总览与 14 个技能命令（平铺直达与 `/superpowers-<技能名>` 前缀过滤补全两种形态）。技能命令带输入提示：**选中后命令保留在输入栏不会立即发送**，继续输入你的诉求再回车，技能正文随消息一起注入会话。
-- **可选 agent preset**：`preset/superpowers` 可作为「Superpowers」模式出现在新会话预设选择器中。
-- **零运行时依赖**：`lib/` 为编译产物随包分发，GitHub 安装时 `prepare` 自动构建。
+## Features
 
-## 安装
+- **14 skills**: brainstorming, test-driven-development, systematic-debugging, writing-plans, executing-plans, subagent-driven-development, dispatching-parallel-agents, using-git-worktrees, verification-before-completion, requesting-code-review, receiving-code-review, finishing-a-development-branch, writing-skills, using-superpowers.
+- **Automatic bootstrap injection**: at session start the plugin injects the full `using-superpowers` skill plus the DSH tool mapping, so the model walks the brainstorming → planning → TDD → debugging → verification workflow before writing code (the DSH equivalent of Claude Code's SessionStart hook).
+- **Native skill catalog**: skills register through `ctx.skills` into each session's `<available_skills>` catalog and load with the native `skill` tool, exactly like any other skill.
+- **DSH tool mapping**: `skills/using-superpowers/references/dsh-tools.md` translates the skills' action vocabulary into DSH tools (`skill` / `read` / `write` / `edit` / `grep` / `glob` / `bash` / `todo_write` / `subagent` / `subagent_fork` / `workflow` / `/plan`+`exit_plan_mode` / `web_search` / `ask_user_question`, …).
+- **Slash-command family**: typing `/` reveals `/superpowers [skill] [your request]` plus 14 per-skill commands (both flat names and `/superpowers-<skill>` prefix-filtered forms). Skill commands use an input claim flow: **picking one keeps the command in the input box instead of sending immediately**, so you can type your request and press Enter to send the skill gesture together with your message.
+- **Optional agent preset**: `preset/superpowers` appears as a "Superpowers" mode in the new-session preset picker.
+- **Zero runtime dependencies**: `lib/` ships prebuilt; installing from GitHub runs `prepare` which rebuilds automatically.
 
-### 方式一：dsh 命令（推荐）
+## Installation
+
+### Option 1: dsh command (recommended)
 
 ```sh
 dsh plugin --profile web add github:stillU/dsh-superpowers
 ```
 
-`dsh plugin --profile <name> ...` 会把参数转发给 profile 内的 pnpm：pnpm 拉取源码并运行 `prepare` 自动构建 `lib/`，再写入依赖并自动追加 `dsh.profile.bundles`。
+`dsh plugin --profile <name> ...` forwards its arguments to pnpm inside the profile: pnpm fetches the source, runs `prepare` to build `lib/`, adds the dependency and appends the bundle to `dsh.profile.bundles` automatically.
 
-pnpm >= 10 默认拒绝运行 git 依赖的构建脚本，首次安装失败时，把包键加入该 profile 的 `pnpm-workspace.yaml` 后重试：
+pnpm >= 10 refuses to run git-dependency build scripts by default. If the first install fails, allow the build key in the profile's `pnpm-workspace.yaml` and retry:
 
 ```yaml
 allowBuilds:
   dsh-superpowers: true
 ```
 
-建议锁定 commit：`dsh plugin --profile web add github:stillU/dsh-superpowers#<commit-sha>`。
+It is recommended to pin a commit: `dsh plugin --profile web add github:stillU/dsh-superpowers#<commit-sha>`.
 
-安装后**重启 dsh web** 即可生效；验证：`dsh --profile web --dump-config` 应出现 `dsh-superpowers` 配置层。
+Restart **dsh web** after installing. Verify with `dsh --profile web --dump-config` — a `dsh-superpowers` config layer should appear.
 
-## 使用
+## Usage
 
-- 新会话自动出现 14 个 superpowers 技能目录，模型会先检查相关技能再行动；
-- 输入 `/` 使用命令家族：`/superpowers` 查看总览，`/brainstorming` 等直接调用技能（可继续输入诉求后回车一起发送）；
-NaN
+- New sessions automatically list the 14 superpowers skills in the catalog; the model checks for a relevant skill before acting.
+- Type `/` to open the command family: `/superpowers` shows the overview, `/brainstorming` and the other skill commands invoke a skill (type your request after the command and press Enter to send them together).
+- To use the "Superpowers" session mode, copy `preset/superpowers` to `$DSH_HOME/.agent-presets/`, restart, and select it in the new-session preset picker.
 
-## 配置
+## Configuration
 
-| 键 | 默认 | 说明 |
+| Key | Default | Description |
 |---|---|---|
-| `enabled` | `true` | 整体开关 |
-| `providerName` | `superpowers` | skills provider 名称 |
-| `bootstrapSection.enabled` | `true` | 是否注入会话起始 bootstrap |
-| `bootstrapSection.order` | `45` | 系统提示词段顺序 |
-| `commands.enabled` | `true` | 是否注册斜杠命令家族 |
-| `commands.perSkill` | `true` | 是否注册 14 个技能命令 |
+| `enabled` | `true` | Master switch |
+| `providerName` | `superpowers` | Skills provider name |
+| `bootstrapSection.enabled` | `true` | Inject the session-start bootstrap |
+| `bootstrapSection.order` | `45` | System-prompt section order |
+| `commands.enabled` | `true` | Register the slash-command family |
+| `commands.perSkill` | `true` | Register the 14 per-skill commands |
 
-在 profile 的 `cordis.patch.yml` 中按 id 覆写（`- id: superpowers / name: dsh-superpowers / config: {...}`，覆写需重述全部键）。
+Override per-row in the profile's `cordis.patch.yml` (`- id: superpowers / name: dsh-superpowers / config: {...}`; an override must restate every key you want to keep).
 
-## 卸载
+## Uninstall
 
 ```sh
 dsh plugin --profile web remove dsh-superpowers
 ```
 
-## 致谢与许可
+## Credits & License
 
-本项目是对上游的忠实移植，**鸣谢原作者**：
+This project is a faithful port of the original work — **credit to the original author**:
 
-- **Superpowers**：[obra/superpowers](https://github.com/obra/superpowers)，作者 **Jesse Vincent**（obra），MIT 许可。全部技能正文逐字 vendor（仅新增 DSH 工具映射文件），移植遵循其 `docs/porting-to-a-new-harness.md` 规约。
-- 技能内容版权归上游作者所有，见 [LICENSE](LICENSE) 与 [NOTICE](NOTICE)；溯源信息见 [SOURCES.md](SOURCES.md)。
-- DSH 适配（package manifest、bootstrap 注入、技能 provider、命令家族、agent preset、脚本）由 [stillU](https://github.com/stillU) 维护，MIT 许可，© 2026 stillU。
+- **Superpowers**: [obra/superpowers](https://github.com/obra/superpowers) by **Jesse Vincent** (obra), MIT License. All skill bodies are vendored verbatim (the only addition is the DSH tool-mapping reference file), following upstream's [porting-to-a-new-harness](https://github.com/obra/superpowers/blob/main/docs/porting-to-a-new-harness.md) guide.
+- Upstream skill content stays © Jesse Vincent; see [LICENSE](LICENSE) and [NOTICE](NOTICE). Provenance is recorded in [SOURCES.md](SOURCES.md).
+- The DSH adaptation (package manifest, bootstrap injection, skills provider, command family, agent preset, scripts) is maintained by [stillU](https://github.com/stillU), distributed under the MIT License, © 2026 stillU.
 
-## 相关链接
+## Links
 
-- 上游：<https://github.com/obra/superpowers>
-- 本仓库：<https://github.com/stillU/dsh-superpowers>
-- DeepSeek Harness：<https://deepseek-harness.github.io/deepseek-harness/>
+- Upstream: <https://github.com/obra/superpowers>
+- This repository: <https://github.com/stillU/dsh-superpowers>
+- DeepSeek Harness: <https://deepseek-harness.github.io/deepseek-harness/>

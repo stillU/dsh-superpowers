@@ -16,7 +16,8 @@
     "LICENSE",
     "NOTICE",
     "SOURCES.md",
-    "cordis.patch.yml"
+    "cordis.patch.yml",
+    "README.zh-CN.md"
   ],
   "dsh": {
     "bundle": {
