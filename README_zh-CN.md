@@ -1,5 +1,7 @@
 # dsh-superpowers
 
+[English](README.md) | [简体中文](README_zh-CN.md)
+
 > DeepSeek Harness × Superpowers：把 obra/superpowers 的完整技能方法论搬进 DSH，装完即用，无需每会话手动开启。
 
 `dsh-superpowers` 是 [obra/superpowers](https://github.com/obra/superpowers) **v6.3.0** 面向 [DeepSeek Harness](https://deepseek-harness.github.io/deepseek-harness/)（DSH）的宿主插件适配：14 个技能逐字 vendor 自上游，每次会话自动注入 superpowers bootstrap，用 DSH 原生 `skill` 工具与斜杠命令家族驱动完整开发工作流。
