@@ -1,6 +1,6 @@
 # dsh-superpowers
 
-[English](https://github.com/stillU/dsh-superpowers/blob/main/README.md) | [简体中文](README_zh-CN.md)
+[English](README.md) | [简体中文](README_zh-CN.md)
 
 > DeepSeek Harness × Superpowers：把 obra/superpowers 的完整技能方法论搬进 DSH，装完即用，无需每会话手动开启。
 

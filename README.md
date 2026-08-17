@@ -1,6 +1,6 @@
 # dsh-superpowers
 
-[简体中文](https://github.com/stillU/dsh-superpowers/blob/main/README_zh-CN.md)
+[简体中文](README_zh-CN.md)
 
 > DeepSeek Harness × Superpowers: bring the complete superpowers methodology into DSH — install once, no per-session opt-in.
 
