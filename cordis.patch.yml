@@ -1,0 +1,9 @@
+- insert:
+    - id: superpowers
+      name: dsh-superpowers
+      config:
+        enabled: true
+        providerName: superpowers
+        bootstrapSection:
+          enabled: true
+          order: 45

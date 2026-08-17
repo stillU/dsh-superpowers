@@ -1,0 +1,20 @@
+dsh-superpowers
+===============
+
+dsh-superpowers is a DeepSeek Harness (DSH) adaptation of "Superpowers" —
+obra/superpowers, https://github.com/obra/superpowers.
+
+- Repository: https://github.com/stillU/dsh-superpowers
+- Adapter maintained by stillU; DSH adaptation copyright (c) 2026 stillU.
+
+- Upstream project: obra/superpowers v6.3.0 (2026-08-12), MIT License.
+- The contents of skills/ are vendored VERBATIM from the upstream repository at
+  origin/main b36e0829c6d0140e93cfef2ca599b1b07d4a7797 (v6.3.0). Skill bodies
+  are intentionally unmodified; see SOURCES.md for full provenance.
+- The only file added inside the vendored tree is
+  skills/using-superpowers/references/dsh-tools.md — a tool-mapping reference
+  for DeepSeek Harness, the DSH analog of the upstream references/*-tools.md
+  files. Its canonical copy lives at references/dsh-tools.md.
+- This adaptation (package manifest, session bootstrap glue, embedded skills
+  provider, agent preset) is distributed under the MIT License. Upstream
+  copyright remains with Jesse Vincent; see LICENSE.
